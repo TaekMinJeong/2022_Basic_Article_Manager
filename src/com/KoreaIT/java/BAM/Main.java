@@ -1,6 +1,8 @@
 //	아래의 패키지로 이동 시킴
 package com.KoreaIT.java.BAM;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -11,6 +13,8 @@ public class Main {
 		Scanner sc = new Scanner(System.in);
 		
 		int lastArticleID = 0;
+		
+		List<Article> articles = new ArrayList<>();
 		
 		while(true) {			
 			System.out.printf("명령어 : ");
@@ -35,6 +39,8 @@ public class Main {
 				
 				lastArticleID++;
 				
+				Article article = new Article(lastArticleID, title, body);
+				
 				System.out.printf("%d번 글이 생성되었습니다\n", lastArticleID);
 				
 				System.out.printf("%s, %s\n", title, body);
@@ -46,5 +52,17 @@ public class Main {
 		System.out.println("== 프로그램 종료 ==");
 		
 		sc.close();
+	}
+}
+
+class Article{
+	int id;
+	String title;
+	String body;
+	
+	Article(int id, String title, String body){
+		this.id = id;
+		this.title = title;
+		this.body = body;
 	}
 }
