@@ -10,6 +10,10 @@ public class Main {
 		//	입력 받기 위한 준비
 		Scanner sc = new Scanner(System.in);
 		
+		
+		
+		
+		
 		String cmd = sc.nextLine();
 		cmd = sc.nextLine();
 		
