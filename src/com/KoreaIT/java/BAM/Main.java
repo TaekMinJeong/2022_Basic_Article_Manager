@@ -66,9 +66,9 @@ public class Main {
 				int foundIndex = -1;
 				
 				for(int i = 0; i < articles.size(); i++) {
+					Article article = articles.get(i);
 					
 					if(article.id == id) {
-						foundArticle = article;
 						foundIndex = i;
 						break;
 					}
