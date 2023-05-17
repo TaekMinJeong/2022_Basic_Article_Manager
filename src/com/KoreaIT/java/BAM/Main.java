@@ -6,15 +6,20 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
+	private static List<Article> articles;
+	static {
+		articles = new ArrayList<>();
+	}
+	
 	public static void main(String[] args) {
 		System.out.println("== 프로그램 시작 ==");
+		
+		makeTestData();
 		
 		//	입력 받기 위한 준비
 		Scanner sc = new Scanner(System.in);
 		
 		int lastArticleID = 0;
-		
-		List<Article> articles = new ArrayList<>();
 		
 		while(true) {			
 			System.out.printf("명령어 : ");
@@ -129,6 +134,13 @@ public class Main {
 		
 		sc.close();
 	}
+	
+	private static void makeTestData() {
+		System.out.println("테스트를 위한 게시물 데이터를 생성합니다.");
+		articles.add(new Article(1, Util.getNowDateStr(), "제목1", "내용1", 10));
+		articles.add(new Article(2, Util.getNowDateStr(), "제목2", "내용2", 20));
+		articles.add(new Article(3, Util.getNowDateStr(), "제목3", "내용3", 55));
+	}
 }
 
 class Article{
@@ -143,9 +155,16 @@ class Article{
 		this.title = title;
 		this.body = body;
 		this.regDate = regDate;
-		this.viewCnt = 0;
 	}
 	
+	public Article(int id, String regDate, String title, String body, int viewCnt) {
+		this.id = id;
+		this.title = title;
+		this.body = body;
+		this.regDate = regDate;
+		this.viewCnt = viewCnt;
+	}
+
 	public void addViewCnt() {
 		this.viewCnt++;
 	}
