@@ -1,6 +1,7 @@
 package com.KoreaIT.java.BAM;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -25,7 +26,7 @@ public class App {
 		
 		while(true) {			
 			System.out.printf("명령어 : ");
-			String cmd = sc.nextLine();
+			String cmd = sc.nextLine().trim();
 			
 			if(cmd.length() == 0) {
 				System.out.println("명령어를 입력해주세요");
@@ -48,6 +49,43 @@ public class App {
 					Article article = articles.get(i);
 					
 					System.out.printf("%d	|	%s	|	%s		|	%d\n", article.id, article.title, article.regDate, article.viewCnt);
+				}
+				
+			}else if(cmd.startsWith("article list")){
+				
+				if(articles.size() == 0) {
+					System.out.println("게시글이 없습니다.");
+					continue;
+				}
+				
+				String searchKeyword = cmd.substring("article list".length()).trim();
+				
+				List<Article> printArticles = articles;
+				
+				//	검색어를 입력한 경우
+				if(searchKeyword.length() > 0) {
+					System.out.println("검색어 : " + searchKeyword);
+					
+					printArticles = new ArrayList<>();
+					
+					for(Article article : articles) {
+						if(article.title.contains(searchKeyword)) {
+							printArticles.add(article);
+						}
+					}
+					
+					if(printArticles.size() == 0) {
+						System.out.println("검색결과가 없습니다");
+						continue;
+					}
+				}
+				
+				System.out.println("번호	|	제목	|	날짜				|	조회");
+				Collections.reverse(printArticles);
+				if(printArticles.size() > 0) {
+					for(Article article : printArticles) {
+							System.out.printf("%d	|	%s	|	%s		|	%d\n", article.id, article.title, article.regDate, article.viewCnt);
+						}
 				}
 				
 			}else if(cmd.equals("article write")){
