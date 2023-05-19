@@ -120,18 +120,14 @@ public class App {
 	}
 	
 	private Article getArticleById(int id) {
-		Article foundArticle = null;
 		
-		for(int i = 0; i < articles.size(); i++) {
-			Article article = articles.get(i);
-			
+		for(Article article : articles) {
 			if(article.id == id) {
-				foundArticle = article;
-				break;
+				return article;
 			}
 		}
 		
-		return foundArticle;
+		return null;
 	}
 
 	private void makeTestData() {
