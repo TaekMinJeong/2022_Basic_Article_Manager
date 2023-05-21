@@ -6,12 +6,15 @@ import java.util.List;
 import java.util.Scanner;
 
 import com.KoreaIT.java.BAM.dto.Article;
+import com.KoreaIT.java.BAM.dto.Member;
 import com.KoreaIT.java.BAM.util.Util;
 
 public class App {
 	private List<Article> articles;
+	private List<Member> members;
 	App() {
 		articles = new ArrayList<>();
+		members = new ArrayList<>();
 	}
 	
 	public void run() {
@@ -37,21 +40,7 @@ public class App {
 				break;
 			}
 			
-			if(cmd.equals("article list")){
-				if(articles.size() == 0) {
-					System.out.println("게시물이 존재하지 않습니다.");
-					continue;
-				}
-				
-				System.out.println("번호	|	제목	|	날짜				|	조회");
-				
-				for(int i = articles.size() - 1; i >= 0; i--) {
-					Article article = articles.get(i);
-					
-					System.out.printf("%d	|	%s	|	%s		|	%d\n", article.id, article.title, article.regDate, article.viewCnt);
-				}
-				
-			}else if(cmd.startsWith("article list")){
+			if(cmd.startsWith("article list")){
 				
 				if(articles.size() == 0) {
 					System.out.println("게시글이 없습니다.");
@@ -60,13 +49,14 @@ public class App {
 				
 				String searchKeyword = cmd.substring("article list".length()).trim();
 				
-				List<Article> printArticles = articles;
+				//	똑같은 객체를 복사해서 생성함
+				List<Article> printArticles = new ArrayList<>(articles);;
 				
 				//	검색어를 입력한 경우
 				if(searchKeyword.length() > 0) {
 					System.out.println("검색어 : " + searchKeyword);
 					
-					printArticles = new ArrayList<>();
+					printArticles.clear();
 					
 					for(Article article : articles) {
 						if(article.title.contains(searchKeyword)) {
@@ -106,6 +96,23 @@ public class App {
 				System.out.printf("%s번 글이 생성되었습니다\n", lastArticleID);
 				
 				System.out.printf("%s, %s\n", title, body);
+			}else if(cmd.equals("member join")){
+				int id = members.size() + 1;
+				String regDate = Util.getNowDateStr();
+				System.out.printf("로그인 아이디 : ");
+				String loginId = sc.nextLine();
+				System.out.printf("로그인 비밀번호 : ");
+				String loginPw = sc.nextLine();
+				System.out.printf("로그인 비밀번호 확인 : ");
+				String loginPwChk = sc.nextLine();
+				System.out.printf("이름 : ");
+				String name = sc.nextLine();
+				
+				Member member = new Member(id, regDate, loginId, loginPw, name);
+				
+				members.add(member);
+				
+				System.out.printf("%s회원님 환영합니다.\n", id);
 			}else if(cmd.startsWith("article detail ")) {
 				
 				String[] cmdBits = cmd.split(" ");
