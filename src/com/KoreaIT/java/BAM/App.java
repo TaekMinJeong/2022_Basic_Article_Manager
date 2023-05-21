@@ -28,9 +28,7 @@ public class App {
 		Scanner sc = new Scanner(System.in);
 		
 		MemberController memberController = new MemberController(members, sc);
-		ArticleController articleController = new ArticleController();
-		
-		int lastArticleID = 0;
+		ArticleController articleController = new ArticleController(articles, sc);
 		
 		while(true) {			
 			System.out.printf("명령어 : ");
@@ -46,104 +44,15 @@ public class App {
 			}
 			
 			if(cmd.startsWith("article list")){
-				
-				if(articles.size() == 0) {
-					System.out.println("게시글이 없습니다.");
-					continue;
-				}
-				
-				String searchKeyword = cmd.substring("article list".length()).trim();
-				
-				//	똑같은 객체를 복사해서 생성함
-				List<Article> printArticles = new ArrayList<>(articles);;
-				
-				//	검색어를 입력한 경우
-				if(searchKeyword.length() > 0) {
-					System.out.println("검색어 : " + searchKeyword);
-					
-					printArticles.clear();
-					
-					for(Article article : articles) {
-						if(article.title.contains(searchKeyword)) {
-							printArticles.add(article);
-						}
-					}
-					
-					if(printArticles.size() == 0) {
-						System.out.println("검색결과가 없습니다");
-						continue;
-					}
-				}
-				
-				System.out.println("번호	|	제목	|	날짜				|	조회");
-				Collections.reverse(printArticles);
-				if(printArticles.size() > 0) {
-					for(Article article : printArticles) {
-							System.out.printf("%d	|	%s	|	%s		|	%d\n", article.id, article.title, article.regDate, article.viewCnt);
-						}
-				}
-				
+				articleController.showList(cmd);
 			}else if(cmd.equals("article write")){
-				int id = lastArticleID + 1;
-				lastArticleID = id;
-				String regDate = Util.getNowDateStr();
-				
-				System.out.println("regDate : " + regDate);
-				System.out.println("제목 : ");
-				String title = sc.nextLine();
-				System.out.println("내용 : ");
-				String body = sc.nextLine();
-				
-				Article article = new Article(id, regDate, title, body);
-				
-				articles.add(article);
-				
-				System.out.printf("%s번 글이 생성되었습니다\n", lastArticleID);
-				
-				System.out.printf("%s, %s\n", title, body);
+				articleController.doJoin();
 			}else if(cmd.equals("member join")){
 				memberController.doJoin();
 			}else if(cmd.startsWith("article detail ")) {
-				
-				String[] cmdBits = cmd.split(" ");
-				int id = Integer.parseInt(cmdBits[2]);
-				
-				Article foundArticle = getArticleById(id);
-				
-				if(foundArticle == null) {
-					System.out.printf("%d번 게시물은 존재하지 않습니다.\n", id);
-					continue;
-				}
-				
-				foundArticle.addViewCnt();
-				
-				System.out.printf("번호 : %d\n", foundArticle.id);
-				System.out.printf("날짜 : %s\n", foundArticle.regDate);
-				System.out.printf("제목 : %s\n", foundArticle.title);
-				System.out.printf("내용 : %s\n", foundArticle.body);
-				System.out.printf("조회 : %s\n", foundArticle.viewCnt);
-				
+				articleController.showDetail(cmd);
 			}else if(cmd.startsWith("article modify ")) {
-				
-				String[] cmdBits = cmd.split(" ");
-				int id = Integer.parseInt(cmdBits[2]);
-				
-				Article foundArticle = getArticleById(id);
-				
-				if(foundArticle == null) {
-					System.out.printf("%d번 게시물은 존재하지 않습니다.\n", id);
-					continue;
-				}
-				
-				System.out.printf("수정할 제목 : ");
-				String title = sc.nextLine();
-				System.out.printf("수정할 내용 : ");
-				String body = sc.nextLine();
-				
-				foundArticle.title = title;
-				foundArticle.body = body;
-				
-				System.out.printf("%d번글이 수정되었습니다.\n", id);
+				articleController.doModify(cmd);
 			}else {
 				System.out.println("존재하지 않는 명령어입니다.");
 			}
@@ -152,17 +61,6 @@ public class App {
 		System.out.println("== 프로그램 종료 ==");
 		
 		sc.close();
-	}
-
-	private Article getArticleById(int id) {
-		
-		for(Article article : articles) {
-			if(article.id == id) {
-				return article;
-			}
-		}
-		
-		return null;
 	}
 
 	private void makeTestData() {
