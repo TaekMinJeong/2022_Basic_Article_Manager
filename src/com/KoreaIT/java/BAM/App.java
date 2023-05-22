@@ -1,11 +1,11 @@
 package com.KoreaIT.java.BAM;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
 import com.KoreaIT.java.BAM.controller.ArticleController;
+import com.KoreaIT.java.BAM.controller.Controller;
 import com.KoreaIT.java.BAM.controller.MemberController;
 import com.KoreaIT.java.BAM.dto.Article;
 import com.KoreaIT.java.BAM.dto.Member;
@@ -43,19 +43,43 @@ public class App {
 				break;
 			}
 			
-			if(cmd.startsWith("article list")){
-				articleController.showList(cmd);
-			}else if(cmd.equals("article write")){
-				articleController.doJoin();
-			}else if(cmd.equals("member join")){
-				memberController.doJoin();
-			}else if(cmd.startsWith("article detail ")) {
-				articleController.showDetail(cmd);
-			}else if(cmd.startsWith("article modify ")) {
-				articleController.doModify(cmd);
+			String[] cmdBits = cmd.split(" ");		//	article list
+			
+			//	article
+			//	이런식으로 하나만 들어오는 경우
+			if(cmdBits.length == 1) {
+				System.out.println("명령어를 확인해주세요");
+				continue;
+			}
+			
+			String controllerName = cmdBits[0];		//	article
+			String methodName = cmdBits[1];			//	list
+			Controller controller = null;
+			
+			if(controllerName.equals("article")) {
+				controller = articleController;
+			}else if(controllerName.equals("member")) {
+				controller = memberController;
 			}else {
 				System.out.println("존재하지 않는 명령어입니다.");
+				continue;
 			}
+			
+			controller.doAction(cmd, methodName);
+			
+//			if(cmd.startsWith("article list")){
+//				articleController.showList(cmd);
+//			}else if(cmd.equals("article write")){
+//				articleController.doJoin();
+//			}else if(cmd.equals("member join")){
+//				memberController.doJoin();
+//			}else if(cmd.startsWith("article detail ")) {
+//				articleController.showDetail(cmd);
+//			}else if(cmd.startsWith("article modify ")) {
+//				articleController.doModify(cmd);
+//			}else {
+//				System.out.println("존재하지 않는 명령어입니다.");
+//			}
 		}
 		
 		System.out.println("== 프로그램 종료 ==");

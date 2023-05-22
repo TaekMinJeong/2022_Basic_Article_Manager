@@ -8,13 +8,31 @@ import java.util.Scanner;
 import com.KoreaIT.java.BAM.dto.Article;
 import com.KoreaIT.java.BAM.util.Util;
 
-public class ArticleController {
+public class ArticleController extends Controller{
 	List<Article> articles;
 	Scanner sc;
+	String cmd;
 	
 	public ArticleController(List<Article> articles, Scanner sc) {
 		this.articles = articles;
 		this.sc = sc;
+	}
+	
+	@Override
+	public void doAction(String cmd, String methodName) {
+		this.cmd = cmd;
+		
+		switch(methodName) {
+		case "list":
+			showList();
+			break;
+		case "detail":
+			showDetail();
+			break;
+		case "modify":
+			doModify();
+			break;
+		}
 	}
 	
 	public void doJoin() {
@@ -36,7 +54,7 @@ public class ArticleController {
 		System.out.printf("%s, %s\n", title, body);
 	}
 
-	public void showList(String cmd) {
+	public void showList() {
 		if(articles.size() == 0) {
 			System.out.println("게시글이 없습니다.");
 			return;
@@ -74,8 +92,14 @@ public class ArticleController {
 		}
 	}
 
-	public void showDetail(String cmd) {
+	public void showDetail() {
 		String[] cmdBits = cmd.split(" ");
+		
+		if(cmdBits.length == 2) {
+			System.out.println("명령어를 확인해주세요");
+			return;
+		}
+		
 		int id = Integer.parseInt(cmdBits[2]);
 		
 		Article foundArticle = getArticleById(id);
@@ -95,7 +119,7 @@ public class ArticleController {
 		
 	}
 
-	public void doModify(String cmd) {
+	public void doModify() {
 		String[] cmdBits = cmd.split(" ");
 		int id = Integer.parseInt(cmdBits[2]);
 		
