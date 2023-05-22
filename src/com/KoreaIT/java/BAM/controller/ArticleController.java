@@ -9,12 +9,12 @@ import com.KoreaIT.java.BAM.dto.Article;
 import com.KoreaIT.java.BAM.util.Util;
 
 public class ArticleController extends Controller{
-	List<Article> articles;
-	Scanner sc;
-	String cmd;
+	private List<Article> articles;
+	private Scanner sc;
+	private String cmd;
 	
-	public ArticleController(List<Article> articles, Scanner sc) {
-		this.articles = articles;
+	public ArticleController(Scanner sc) {
+		this.articles = new ArrayList<>();
 		this.sc = sc;
 	}
 	
@@ -32,10 +32,16 @@ public class ArticleController extends Controller{
 		case "modify":
 			doModify();
 			break;
+		case "write":
+			doWrite();
+			break;
+		default:
+			System.out.println("존재하지 않는 명령어입니다.");
+			break;
 		}
 	}
 	
-	public void doJoin() {
+	private void doWrite() {
 		int id = articles.size() + 1;
 		String regDate = Util.getNowDateStr();
 		
@@ -54,7 +60,7 @@ public class ArticleController extends Controller{
 		System.out.printf("%s, %s\n", title, body);
 	}
 
-	public void showList() {
+	private void showList() {
 		if(articles.size() == 0) {
 			System.out.println("게시글이 없습니다.");
 			return;
@@ -92,7 +98,7 @@ public class ArticleController extends Controller{
 		}
 	}
 
-	public void showDetail() {
+	private void showDetail() {
 		String[] cmdBits = cmd.split(" ");
 		
 		if(cmdBits.length == 2) {
@@ -119,7 +125,7 @@ public class ArticleController extends Controller{
 		
 	}
 
-	public void doModify() {
+	private void doModify() {
 		String[] cmdBits = cmd.split(" ");
 		int id = Integer.parseInt(cmdBits[2]);
 		
@@ -163,5 +169,12 @@ public class ArticleController extends Controller{
 		}
 		
 		return null;
+	}
+	
+	public void makeTestData() {
+		System.out.println("테스트를 위한 게시물 데이터를 생성합니다.");
+		articles.add(new Article(1, Util.getNowDateStr(), "제목1", "내용1", 10));
+		articles.add(new Article(2, Util.getNowDateStr(), "제목2", "내용2", 20));
+		articles.add(new Article(3, Util.getNowDateStr(), "제목3", "내용3", 55));
 	}
 }
