@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import com.KoreaIT.java.BAM.dto.Article;
 import com.KoreaIT.java.BAM.dto.Member;
 import com.KoreaIT.java.BAM.util.Util;
 
@@ -29,13 +30,49 @@ public class MemberController extends Controller{
 		case "login":
 			doLogin();
 			break;
+		case "logout":
+			doLogout();
+			break;
+		case "profile":
+			showProfile();
+			break;
 		default:
 			System.out.println("존재하지 않는 명령어입니다.");
 			break;
 		}
 	}
+	
+	private boolean isLogined() {
+		return loginedMember != null;
+	}
+
+	private void doLogout() {
+		if(isLogined() == false) {
+			System.out.println("로그아웃 상태가 아닙니다.");
+			return;
+		}
+		
+		loginedMember = null;
+		System.out.println("로그아웃 되었습니다.");
+	}
+
+	private void showProfile() {
+		if(loginedMember == null) {
+			System.out.println("로그아웃 상태입니다.");
+			return;
+		}
+		
+		System.out.println("== 내정보 ==");
+		System.out.printf("로그인 아이디 : %s\n", loginedMember.loginId);
+		System.out.printf("이름 : %s\n", loginedMember.name);
+	}
 
 	private void doLogin() {
+		if(isLogined()) {
+			System.out.println("이미 로그인 상태입니다.");
+			return;
+		}
+		
 		System.out.printf("로그인 아이디 : ");
 		String loginId = sc.nextLine();
 		System.out.printf("로그인 비밀번호 : ");
@@ -54,7 +91,7 @@ public class MemberController extends Controller{
 		}
 		
 		loginedMember = member;
-		System.out.println("로그인 성공!!");
+		System.out.printf("로그인 성공!! %s님 환영합니다!!\n", loginedMember.name);
 	}
 
 	private Member getMemberByLoginId(String loginId) {
@@ -139,4 +176,10 @@ public class MemberController extends Controller{
 		return -1;
 	}
 
+	public void makeTestData() {
+		System.out.println("테스트를 위한 회원 데이터를 생성합니다.");
+		members.add(new Member(1, Util.getNowDateStr(), "test1", "test1", "정택민"));
+		members.add(new Member(2, Util.getNowDateStr(), "test2", "test2", "최우뚝"));
+		members.add(new Member(3, Util.getNowDateStr(), "test3", "test3", "박정혁"));
+	}
 }

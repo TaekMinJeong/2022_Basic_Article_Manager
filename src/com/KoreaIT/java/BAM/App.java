@@ -24,6 +24,7 @@ public class App {
 		
 		//	테스트 데이터 생성
 		articleController.makeTestData();
+		memberController.makeTestData();
 		
 		while(true) {			
 			System.out.printf("명령어 : ");
