@@ -33,6 +33,10 @@ public class ArticleController extends Controller{
 			doModify();
 			break;
 		case "write":
+			if(isLogined() == false) {
+				System.out.println("로그아웃 상태가 아닙니다.");
+				break;
+			}
 			doWrite();
 			break;
 		default:
@@ -42,6 +46,7 @@ public class ArticleController extends Controller{
 	}
 	
 	private void doWrite() {
+		
 		int id = articles.size() + 1;
 		String regDate = Util.getNowDateStr();
 		

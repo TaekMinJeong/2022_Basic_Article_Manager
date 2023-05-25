@@ -11,8 +11,6 @@ import com.KoreaIT.java.BAM.util.Util;
 public class MemberController extends Controller{
 	private List<Member> members;
 	private Scanner sc;
-	private String cmd;
-	private Member loginedMember;
 	
 	public MemberController(Scanner sc) {
 		this.members = new ArrayList<>();
@@ -21,7 +19,6 @@ public class MemberController extends Controller{
 	
 	@Override
 	public void doAction(String cmd, String methodName) {
-		this.cmd = cmd;
 		
 		switch(methodName) {
 		case "join":
@@ -40,10 +37,6 @@ public class MemberController extends Controller{
 			System.out.println("존재하지 않는 명령어입니다.");
 			break;
 		}
-	}
-	
-	private boolean isLogined() {
-		return loginedMember != null;
 	}
 
 	private void doLogout() {
