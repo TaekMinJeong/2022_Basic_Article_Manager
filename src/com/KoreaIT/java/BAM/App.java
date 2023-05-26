@@ -27,7 +27,7 @@ public class App {
 		memberController.makeTestData();
 		
 		while(true) {			
-			System.out.printf("명령어 : ");
+			System.out.printf("명령어) ");
 			String cmd = sc.nextLine().trim();
 			
 			if(cmd.length() == 0) {
@@ -61,21 +61,29 @@ public class App {
 				continue;
 			}
 			
-			controller.doAction(cmd, methodName);
+//			String actionName = controllerName + "/" + methodName;
 			
-//			if(cmd.startsWith("article list")){
-//				articleController.showList(cmd);
-//			}else if(cmd.equals("article write")){
-//				articleController.doJoin();
-//			}else if(cmd.equals("member join")){
-//				memberController.doJoin();
-//			}else if(cmd.startsWith("article detail ")) {
-//				articleController.showDetail(cmd);
-//			}else if(cmd.startsWith("article modify ")) {
-//				articleController.doModify(cmd);
-//			}else {
-//				System.out.println("존재하지 않는 명령어입니다.");
-//			}
+			switch(methodName) {
+			case "write":
+			case "modify":
+			case "delete":
+			case "logout":
+			case "profile":
+				if(Controller.isLogined() == false) {
+					System.out.println("로그인 후 이용해주세요.");
+					continue;
+				}
+				break;
+			case "login":
+			case "join":
+				if(Controller.isLogined()) {
+					System.out.println("로그아웃 후 이용해주세요.");
+					continue;
+				}
+				break;
+			}
+			
+			controller.doAction(cmd, methodName);
 		}
 		
 		System.out.println("== 프로그램 종료 ==");
