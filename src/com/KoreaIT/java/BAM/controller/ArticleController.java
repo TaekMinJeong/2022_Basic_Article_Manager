@@ -5,7 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
+import com.KoreaIT.java.BAM.container.Container;
 import com.KoreaIT.java.BAM.dto.Article;
+import com.KoreaIT.java.BAM.dto.Member;
 import com.KoreaIT.java.BAM.util.Util;
 
 public class ArticleController extends Controller{
@@ -14,7 +16,7 @@ public class ArticleController extends Controller{
 	private String cmd;
 	
 	public ArticleController(Scanner sc) {
-		this.articles = new ArrayList<>();
+		this.articles = Container.articleDao.articles;
 		this.sc = sc;
 	}
 	
@@ -46,7 +48,7 @@ public class ArticleController extends Controller{
 
 	private void doWrite() {
 		
-		int id = articles.size() + 1;
+		int id = Container.articleDao.getNewId();
 		String regDate = Util.getNowDateStr();
 		
 		System.out.println("regDate : " + regDate);
@@ -57,7 +59,8 @@ public class ArticleController extends Controller{
 		
 		Article article = new Article(id, regDate, loginedMember.id, title, body);
 		
-		articles.add(article);
+		Container.articleDao.add(article);
+		//articles.add(article);
 		
 		System.out.printf("%s번 글이 생성되었습니다\n", id);
 		
@@ -94,11 +97,22 @@ public class ArticleController extends Controller{
 		}
 		
 		System.out.println("번호	|	제목	|	날짜				|	작성자	|	조회");
-		Collections.reverse(printArticles);
-		if(printArticles.size() > 0) {
-			for(Article article : printArticles) {
-					System.out.printf("%d	|	%s	|	%s		|	%s	|	%d\n", article.id, article.title, article.regDate, article.memberId, article.viewCnt);
+		
+		for(int i = printArticles.size() - 1; i >= 0; i--) {
+			Article article = printArticles.get(i);
+			
+			String writerName = null;
+			
+			List<Member> members = Container.memberDao.members;
+			
+			for(Member member : members) {
+				if(article.memberId == member.id) {
+					writerName = member.name;
+					break;
 				}
+			}
+			
+			System.out.printf("%d	|	%s	|	%s		|	%s	|	%d\n", article.id, article.title, article.regDate, writerName, article.viewCnt);
 		}
 	}
 
@@ -203,8 +217,8 @@ public class ArticleController extends Controller{
 	
 	public void makeTestData() {
 		System.out.println("테스트를 위한 게시물 데이터를 생성합니다.");
-		articles.add(new Article(1, Util.getNowDateStr(), 1, "제목1", "내용1", 10));
-		articles.add(new Article(2, Util.getNowDateStr(), 2, "제목2", "내용2", 20));
-		articles.add(new Article(3, Util.getNowDateStr(), 2, "제목3", "내용3", 55));
+		Container.articleDao.add(new Article(Container.articleDao.getNewId(), Util.getNowDateStr(), 1, "제목1", "내용1", 10));
+		Container.articleDao.add(new Article(Container.articleDao.getNewId(), Util.getNowDateStr(), 2, "제목2", "내용2", 20));
+		Container.articleDao.add(new Article(Container.articleDao.getNewId(), Util.getNowDateStr(), 2, "제목3", "내용3", 55));
 	}
 }
