@@ -16,7 +16,6 @@ public class ArticleController extends Controller{
 	private String cmd;
 	
 	public ArticleController(Scanner sc) {
-		this.articles = Container.articleDao.articles;
 		this.sc = sc;
 	}
 	
@@ -68,38 +67,20 @@ public class ArticleController extends Controller{
 	}
 
 	private void showList() {
-		if(articles.size() == 0) {
+		String searchKeyword = cmd.substring("article list".length()).trim();
+		
+		//	똑같은 객체를 복사해서 생성함
+		List<Article> forPrintArticles = Container.articleService.getForPrintArticles(searchKeyword);
+		
+		if(forPrintArticles.size() == 0) {
 			System.out.println("게시글이 없습니다.");
 			return;
 		}
 		
-		String searchKeyword = cmd.substring("article list".length()).trim();
-		
-		//	똑같은 객체를 복사해서 생성함
-		List<Article> printArticles = new ArrayList<>(articles);;
-		
-		//	검색어를 입력한 경우
-		if(searchKeyword.length() > 0) {
-			System.out.println("검색어 : " + searchKeyword);
-			
-			printArticles.clear();
-			
-			for(Article article : articles) {
-				if(article.title.contains(searchKeyword)) {
-					printArticles.add(article);
-				}
-			}
-			
-			if(printArticles.size() == 0) {
-				System.out.println("검색결과가 없습니다");
-				return;
-			}
-		}
-		
 		System.out.println("번호	|	제목	|	날짜				|	작성자	|	조회");
 		
-		for(int i = printArticles.size() - 1; i >= 0; i--) {
-			Article article = printArticles.get(i);
+		for(int i = forPrintArticles.size() - 1; i >= 0; i--) {
+			Article article = forPrintArticles.get(i);
 			
 			String writerName = null;
 			
@@ -133,11 +114,22 @@ public class ArticleController extends Controller{
 			return;
 		}
 		
+		String writerName = null;
+		
+		List<Member> members = Container.memberDao.members;
+		
+		for(Member member : members) {
+			if(foundArticle.memberId == member.id) {
+				writerName = member.name;
+				break;
+			}
+		}
+		
 		foundArticle.addViewCnt();
 		
 		System.out.printf("번호 	: %d\n", foundArticle.id);
 		System.out.printf("날짜 	: %s\n", foundArticle.regDate);
-		System.out.printf("작성자 	: %s\n", foundArticle.memberId);
+		System.out.printf("작성자 	: %s\n", writerName);
 		System.out.printf("제목 	: %s\n", foundArticle.title);
 		System.out.printf("내용 	: %s\n", foundArticle.body);
 		System.out.printf("조회 	: %s\n", foundArticle.viewCnt);
@@ -219,6 +211,6 @@ public class ArticleController extends Controller{
 		System.out.println("테스트를 위한 게시물 데이터를 생성합니다.");
 		Container.articleDao.add(new Article(Container.articleDao.getNewId(), Util.getNowDateStr(), 1, "제목1", "내용1", 10));
 		Container.articleDao.add(new Article(Container.articleDao.getNewId(), Util.getNowDateStr(), 2, "제목2", "내용2", 20));
-		Container.articleDao.add(new Article(Container.articleDao.getNewId(), Util.getNowDateStr(), 2, "제목3", "내용3", 55));
+		Container.articleDao.add(new Article(Container.articleDao.getNewId(), Util.getNowDateStr(), 3, "제목3", "내용3", 55));
 	}
 }

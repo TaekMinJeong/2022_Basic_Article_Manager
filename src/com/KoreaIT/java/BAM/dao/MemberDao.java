@@ -15,5 +15,6 @@ public class MemberDao extends Dao{
 
 	public void add(Member member) {
 		members.add(member);
+		lastId++;
 	}
 }
