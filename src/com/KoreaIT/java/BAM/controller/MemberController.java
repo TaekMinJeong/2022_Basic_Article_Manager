@@ -9,11 +9,9 @@ import com.KoreaIT.java.BAM.dto.Member;
 import com.KoreaIT.java.BAM.util.Util;
 
 public class MemberController extends Controller{
-	private List<Member> members;
 	private Scanner sc;
 	
 	public MemberController(Scanner sc) {
-		this.members = Container.memberDao.members;
 		this.sc = sc;
 	}
 	
@@ -75,7 +73,7 @@ public class MemberController extends Controller{
 				break;
 			}
 			
-			member = getMemberByLoginId(loginId);
+			member = Container.memberService.getMemberByLoginId(loginId);
 			
 			if(member == null) {
 				System.out.println("일치하는 회원이 없습니다.");
@@ -94,18 +92,8 @@ public class MemberController extends Controller{
 		System.out.printf("로그인 성공!! %s님 환영합니다!!\n", loginedMember.name);
 	}
 
-	private Member getMemberByLoginId(String loginId) {
-		int index = getMemberIndexByLoginId(loginId);
-		
-		if(index != -1) {
-			return members.get(index);
-		}
-		
-		return null;
-	}
-
 	private void doJoin() {
-		int id = Container.memberDao.getNewId();
+		int id = Container.memberService.setArticleId();
 		String regDate = Util.getNowDateStr();
 		String loginId = null;
 		
@@ -113,7 +101,7 @@ public class MemberController extends Controller{
 			System.out.printf("로그인 아이디 : ");
 			loginId = sc.nextLine();
 			
-			if(loginIdChk(loginId) == false) {
+			if(Container.memberService.loginIdChk(loginId) == false) {
 				System.out.printf("%s은(는) 이미 사용중인 아이디입니다.\n", loginId);
 				continue;
 			}
@@ -144,42 +132,15 @@ public class MemberController extends Controller{
 		
 		Member member = new Member(id, regDate, loginId, loginPw, name);
 		
-		Container.memberDao.add(member);
+		Container.memberService.add(member);
 		
 		System.out.printf("%s회원님 환영합니다.\n", id);
-	}
-	
-	private boolean loginIdChk(String loginId) {
-		int index = getMemberIndexByLoginId(loginId);
-		
-		if(index == -1) {
-			return true;
-		}
-		
-		
-		return false;
-	}
-
-	private int getMemberIndexByLoginId(String loginId) {
-		int i = 0;
-		
-		for(Member member : members) {
-			//	String 비교는 equals 로 해야함
-			//	== 으로는 비교 할 수 없음
-			if(member.loginId.equals(loginId)) {
-				return i;
-			}
-			
-			i++;
-		}
-		
-		return -1;
 	}
 
 	public void makeTestData() {
 		System.out.println("테스트를 위한 회원 데이터를 생성합니다.");
-		Container.memberDao.add(new Member(Container.memberDao.getNewId(), Util.getNowDateStr(), "test1", "test1", "정택민"));
-		Container.memberDao.add(new Member(Container.memberDao.getNewId(), Util.getNowDateStr(), "test2", "test2", "최우뚝"));
-		Container.memberDao.add(new Member(Container.memberDao.getNewId(), Util.getNowDateStr(), "test3", "test3", "박정혁"));
+		Container.memberService.add(new Member(Container.memberService.setArticleId(), Util.getNowDateStr(), "test1", "test1", "정택민"));
+		Container.memberService.add(new Member(Container.memberService.setArticleId(), Util.getNowDateStr(), "test2", "test2", "최우뚝"));
+		Container.memberService.add(new Member(Container.memberService.setArticleId(), Util.getNowDateStr(), "test3", "test3", "박정혁"));
 	}
 }
